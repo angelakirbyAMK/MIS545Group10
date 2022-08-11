@@ -28,7 +28,7 @@ getmode <- function(v) {
   uniqv[which.max(tabulate(match(v, uniqv)))]
 }
 
-# Create the vector with feature numbers.
+# use the getmode function on the DataSensitivity column
 v <- dataBreaches$DataSensitivity
 
 # Calculate the mode using the user function.
@@ -45,7 +45,7 @@ dataBreaches <- dataBreaches %>% mutate(DataSensitivity =
 
 
 # normalize the RecordsLost feature by taking log10 of RecordsLost and putting 
-# into a new tibble called dataBreaches2 with new column called LogRecordsLost 
+# into new column called LogRecordsLost 
 dataBreaches <- dataBreaches %>%
   mutate(LogRecordsLost = log10(RecordsLost))
   
@@ -57,7 +57,7 @@ dataBreaches <- dataBreaches %>%
 dataBreachesDataFrame <- data.frame(dataBreaches)
 
 # discretize DataSensitivity into Type and store in a new data frame called 
-# dataBreachesDataFrame2
+# dataBreachesDataFrame
 dataBreachesDataFrame <- dataBreachesDataFrame %>%
   mutate(Type = case_when
          (DataSensitivity == 1 ~ "Email/Online Info", 
@@ -66,11 +66,14 @@ dataBreachesDataFrame <- dataBreachesDataFrame %>%
           DataSensitivity == 4 ~ "Health/Personal Records",
           TRUE ~ "Full Details"))
 
-# convert data frame back into tibble called dataBreaches3 with dummy variables
+# convert data frame back into tibble called dataBreaches with dummy variables
 dataBreaches <- as_tibble(dummy.data.frame(data = dataBreachesDataFrame,
                                             names = "Type"))
 
-# dummy code Method column with MaliciousActor 
+# create data frame for second dummy code step
+dataBreachesDataFrame <- data.frame(dataBreaches)
+
+# dummy code Method column for MaliciousActor 
 dataBreachesDataFrame <- dataBreachesDataFrame %>%
   mutate(MaliciousActor = case_when
          (Method == "inside job" ~ 1,
@@ -78,3 +81,6 @@ dataBreachesDataFrame <- dataBreachesDataFrame %>%
            Method == "poor security" ~ 1,
            Method == "accidental leak" ~ 0,
            Method == "lost device" ~ 0))
+
+# convert data frame back into dataBreaches tibble
+dataBreaches <- as_tibble(dataBreachesDataFrame)
