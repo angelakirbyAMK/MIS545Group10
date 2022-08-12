@@ -67,3 +67,15 @@ dataBreachesDataFrame4 <- dataBreachesDataFrame3 %>%
            Method == "lost device" ~ 0))          
 dataBreaches4 <- as_tibble(dummy.data.frame(data = dataBreachesDataFrame4,
                                             names = "Type"))
+
+# Linear Regression Model - Jordan
+
+dataBreachesModel <- lm(data = dataBreaches4,
+                        formula = MaliciousActor ~ RecordsLost + Sector + 
+                          LogRecordsLost + TypeCredit.Card.Info + 
+                          TypeEmail.Online.Info + TypeFull.Details + 
+                          TypeHealth.Personal.Records +
+                          TypeSSN.Personal.Details + TypeUnknown)
+print(dataBreachesModel)
+summary(dataBreachesModel)
+ols_vif_tol(dataBreachesModel)
