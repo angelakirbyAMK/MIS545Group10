@@ -51,4 +51,17 @@ dataBreachesDataFrame2 <- dataBreachesDataFrame %>%
 
 # convert data frame back into tibble called dataBreaches3 with dummy variables
 dataBreaches3 <- as_tibble(dummy.data.frame(data = dataBreachesDataFrame2,
+                                            names = "Type"))]
+
+# Convert Method to Malicious Actor (1 = Malicious Actor & 0 = Non-Malicious Actor)
+
+dataBreachesDataFrame3 <-data.frame(dataBreaches3)
+dataBreachesDataFrame4 <- dataBreachesDataFrame3 %>%
+  mutate(MaliciousActor = case_when
+         (Method == "inside job" ~ 1,
+           Method == "hacked" ~ 1,
+           Method == "poor security" ~ 1,
+           Method == "accidental leak" ~ 0,
+           Method == "lost device" ~ 0))          
+dataBreaches4 <- as_tibble(dummy.data.frame(data = dataBreachesDataFrame4,
                                             names = "Type"))
