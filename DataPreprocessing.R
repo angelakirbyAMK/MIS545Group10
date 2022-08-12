@@ -51,7 +51,7 @@ dataBreachesDataFrame2 <- dataBreachesDataFrame %>%
 
 # convert data frame back into tibble called dataBreaches3 with dummy variables
 dataBreaches3 <- as_tibble(dummy.data.frame(data = dataBreachesDataFrame2,
-                                            names = "Type"))]
+                                            names = "Type"))
 
 # Convert Method to Malicious Actor (1 = Malicious Actor & 
 # 0 = Non-Malicious Actor)
