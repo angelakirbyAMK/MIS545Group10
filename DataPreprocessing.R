@@ -21,6 +21,7 @@
 
 library(tidyverse)
 library(dummies)
+library(olsrr)
 
 # remember to set to your own working directory before running
 setwd("/Users/Straight_As/Documents/UA/MIS/Summer2022/MIS545/GroupProject")
