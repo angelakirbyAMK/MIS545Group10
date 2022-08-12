@@ -53,7 +53,8 @@ dataBreachesDataFrame2 <- dataBreachesDataFrame %>%
 dataBreaches3 <- as_tibble(dummy.data.frame(data = dataBreachesDataFrame2,
                                             names = "Type"))]
 
-# Convert Method to Malicious Actor (1 = Malicious Actor & 0 = Non-Malicious Actor)
+# Convert Method to Malicious Actor (1 = Malicious Actor & 
+# 0 = Non-Malicious Actor)
 
 dataBreachesDataFrame3 <-data.frame(dataBreaches3)
 dataBreachesDataFrame4 <- dataBreachesDataFrame3 %>%
