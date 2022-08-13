@@ -86,7 +86,7 @@ dataBreachesDataFrame <- dataBreachesDataFrame %>%
 dataBreaches <- as_tibble(dataBreachesDataFrame)
 
 # Convert Method to Malicious Actor (1 = Malicious Actor & 
-# 0 = Non-Malicious Actor)
+# 0 = Non-Malicious Actor) - Jordan
 
 dataBreachesDataFrame3 <-data.frame(dataBreaches3)
 dataBreachesDataFrame4 <- dataBreachesDataFrame3 %>%
@@ -99,19 +99,12 @@ dataBreachesDataFrame4 <- dataBreachesDataFrame3 %>%
 dataBreaches4 <- as_tibble(dummy.data.frame(data = dataBreachesDataFrame4,
                                             names = "Type"))
 
-# Linear Regression Model - Jordan
-
-dataBreachesModel <- lm(data = dataBreaches4,
-                        formula = MaliciousActor ~ RecordsLost + Sector + 
-                          LogRecordsLost + TypeCredit.Card.Info + 
-                          TypeEmail.Online.Info + TypeFull.Details + 
-                          TypeHealth.Personal.Records +
-                          TypeSSN.Personal.Details + TypeUnknown)
-print(dataBreachesModel)
-summary(dataBreachesModel)
-ols_vif_tol(dataBreachesModel)
-
 # Logistic Regression & Corr Plot - Jordan
+
+# dummy sector
+
+dataBreaches5 <- as_tibble(dummy.data.frame(data = dataBreachesDataFrame4,
+                                            names = "Sector"))
 
 # Convert columns from dummy to logical
 
