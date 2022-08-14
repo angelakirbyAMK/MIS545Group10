@@ -101,6 +101,7 @@ OutlierMax <- quantile(breachData$DataSensitivity, .75) +
 
 library(tidyverse)
 library(dummies)
+library(olsrr)
 
 # remember to set to your own working directory before running
 setwd("/Users/Straight_As/Documents/UA/MIS/Summer2022/MIS545/GroupProject")
@@ -132,4 +133,33 @@ dataBreachesDataFrame2 <- dataBreachesDataFrame %>%
 # convert data frame back into tibble called dataBreaches3 with dummy variables
 dataBreaches3 <- as_tibble(dummy.data.frame(data = dataBreachesDataFrame2,
                                             names = "Type"))
+<<<<<<< HEAD
 >>>>>>> 01d8f5d52e1858067bc6bdc42cc4a6c0de94bc85
+=======
+
+# Convert Method to Malicious Actor (1 = Malicious Actor & 
+# 0 = Non-Malicious Actor)
+
+dataBreachesDataFrame3 <-data.frame(dataBreaches3)
+dataBreachesDataFrame4 <- dataBreachesDataFrame3 %>%
+  mutate(MaliciousActor = case_when
+         (Method == "inside job" ~ 1,
+           Method == "hacked" ~ 1,
+           Method == "poor security" ~ 1,
+           Method == "accidental leak" ~ 0,
+           Method == "lost device" ~ 0))          
+dataBreaches4 <- as_tibble(dummy.data.frame(data = dataBreachesDataFrame4,
+                                            names = "Type"))
+
+# Linear Regression Model - Jordan
+
+dataBreachesModel <- lm(data = dataBreaches4,
+                        formula = MaliciousActor ~ RecordsLost + Sector + 
+                          LogRecordsLost + TypeCredit.Card.Info + 
+                          TypeEmail.Online.Info + TypeFull.Details + 
+                          TypeHealth.Personal.Records +
+                          TypeSSN.Personal.Details + TypeUnknown)
+print(dataBreachesModel)
+summary(dataBreachesModel)
+ols_vif_tol(dataBreachesModel)
+>>>>>>> afe7d616d5349b0a71a19f0a6d5ceb5767c93955
