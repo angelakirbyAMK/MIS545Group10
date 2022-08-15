@@ -99,7 +99,7 @@ dataBreachesDataFrame4 <- dataBreachesDataFrame3 %>%
 dataBreaches4 <- as_tibble(dummy.data.frame(data = dataBreachesDataFrame4,
                                             names = "Type"))
 
-# Logistic Regression & Corr Plot - Jordan
+# Logistic Regression & Corr Plot - Jordan-------------------------------
 
 # dummy sector
 
@@ -301,6 +301,7 @@ dataBreachesMaliciousActorConfusionMatrix[2, 1] /
 sum(diag(dataBreachesMaliciousActorConfusionMatrix)) /
   nrow(dataBreaches6Testing)
 
+# END OF LOGISTIC REGRESSION MODEL---------------
 
 
 # DECISION TREE Michael W -------------------------
@@ -364,3 +365,162 @@ predictiveAccuracy <- sum(diag(dataBreachesConfusionMatrix)) /
 
 # Display the predictive accuracy on the console
 print(predictiveAccuracy)
+
+# k-Nearest neighbor Model - Jordan----------------------
+
+# clean data for k-nearest neighbors
+
+library(class)
+
+dataBreaches7 <- dataBreaches6 %>%
+  select(-RecordsLost)
+
+dataBreachesDataFrame9 <- data.frame(dataBreaches7)
+
+dataBreachesDataFrame9 <- dataBreachesDataFrame9 %>%
+  mutate(MaliciousActor = case_when
+         (is.na(MaliciousActor) ~ "Unknown",
+           MaliciousActor == TRUE ~ "Malicious Actor", 
+           MaliciousActor == FALSE ~ "Non-Malicious Actor")) 
+
+dataBreaches7 <- as_tibble(dataBreachesDataFrame9)
+
+dataBreaches7 <- dataBreaches7 %>%
+  select(-LogRecordsLost)
+
+# Create Training and Testing Sets
+
+set.seed(5654)
+
+dataBreaches7Labels <- dataBreaches7 %>% select(MaliciousActor)
+dataBreaches7 <- dataBreaches7 %>% select(-MaliciousActor)
+
+sampleSet2 <- sample(nrow(dataBreaches7),
+                    round(nrow(dataBreaches7) * 0.75),
+                    replace = FALSE)
+
+dataBreaches7Training <- dataBreaches6[sampleSet2, ]
+
+# Balance Data with Smote
+
+dataBreaches7TrainingSmoted <-
+  tibble(SMOTE(X = data.frame(dataBreaches7Training),
+               target = dataBreaches7Training$MaliciousActor,
+               dup_size = 4)$data)
+
+summary(dataBreaches7TrainingSmoted)
+
+dataBreaches7TrainingSmoted <- dataBreaches7TrainingSmoted %>%
+  mutate(Sectorfinancial = as.logical(Sectorfinancial),
+         Sectortech = as.logical(Sectortech),
+         Sectorretail = as.logical(Sectorretail),
+         Sectorgovernment = as.logical(Sectorgovernment),
+         SectorNGO = as.logical(SectorNGO),
+         Sectorweb = as.logical(Sectorweb),
+         Sectormisc = as.logical(Sectormisc),
+         Sectortransport = as.logical(Sectortransport),
+         Sectorlegal = as.logical(Sectorlegal),
+         Sectorgaming = as.logical(Sectorgaming),
+         Sectortelecoms = as.logical(Sectortelecoms),
+         Sectorfinance = as.logical(Sectorfinance),
+         Sectorhealth = as.logical(Sectorhealth),
+         Sectormisc..health = as.logical(Sectormisc..health),
+         Sectortech..health = as.logical(Sectortech..health),
+         Sectoracademic = as.logical(Sectoracademic),
+         Sectortech..app = as.logical(Sectortech..app),
+         Sectorweb..tech = as.logical(Sectorweb..tech),
+         Sectortech..web = as.logical(Sectortech..web),
+         Sectorgovernment..health = as.logical(Sectorgovernment..health),
+         Sectorweb..military = as.logical(Sectorweb..military),
+         Sectortech..retail = as.logical(Sectortech..retail),
+         Sectormilitary = as.logical(Sectormilitary),
+         Sectorapp = as.logical(Sectorapp),
+         Sectormilitary..health = as.logical(Sectormilitary..health),
+         Sectorweb..gaming = as.logical(Sectorweb..gaming),
+         Sectorgovernment..military =
+           as.logical(Sectorgovernment..military),
+         TypeCredit.Card.Info = as.logical(TypeCredit.Card.Info),
+         TypeEmail.Online.Info = as.logical(TypeEmail.Online.Info),
+         TypeFull.Details = as.logical(TypeFull.Details),
+         TypeHealth.Personal.Records = as.logical(TypeHealth.Personal.Records),
+         TypeSSN.Personal.Details = as.logical(TypeSSN.Personal.Details),
+         TypeUnknown = as.logical(TypeUnknown),
+         MaliciousActor = as.logical(MaliciousActor))
+
+dataBreaches7TrainingSmoted <- dataBreaches7TrainingSmoted %>%
+  select(-RecordsLost, -LogRecordsLost)
+
+dataBreachesDataFrame10 <- data.frame(dataBreaches7TrainingSmoted)
+
+# Finalize Training Set and Testing Set
+
+dataBreachesDataFrame10 <- dataBreachesDataFrame10 %>%
+  mutate(MaliciousActor = case_when
+         (is.na(MaliciousActor) ~ "Unknown",
+           MaliciousActor == TRUE ~ "Malicious Actor", 
+           MaliciousActor == FALSE ~ "Non-Malicious Actor"))
+
+dataBreaches7Training <- as_tibble(dataBreachesDataFrame10)
+dataBreaches7Training <- dataBreaches7Training %>% drop_na()
+
+dataBreaches7TrainingLabels <- dataBreaches7Training %>% select(MaliciousActor)
+dataBreaches7Training <- dataBreaches7Training %>% select(-MaliciousActor,
+                                                          -class)
+
+dataBreaches7Testing <- dataBreaches6[-sampleSet2, ]
+dataBreaches7Testing <- dataBreaches7Testing %>%
+  select(-RecordsLost, -LogRecordsLost, -MaliciousActor)
+dataBreaches7TestingLabels <- dataBreaches7Labels[-sampleSet2, ]
+
+# Create k-Nearest Neighbor Model 
+# Updated k value to 115 based on most accurate value in for loop
+
+kNearestMaliciousActorPrediction <-
+  knn(train = dataBreaches7Training,
+      test = dataBreaches7Testing,
+      cl = dataBreaches7TrainingLabels$MaliciousActor,
+      k = 115)
+
+print(kNearestMaliciousActorPrediction)
+print(summary(kNearestMaliciousActorPrediction))
+
+# Create Confusion Matrix
+
+dataBreaches7ConfusionMatrix <-
+  table(dataBreaches7TestingLabels$MaliciousActor,
+        kNearestMaliciousActorPrediction)
+
+print(dataBreaches7ConfusionMatrix)
+
+# Check Predictive Accuracy
+
+dataBreaches7PredictiveAccuracy <- sum(diag(dataBreaches7ConfusionMatrix)) /
+  nrow(dataBreaches7Testing)
+
+print(dataBreaches7PredictiveAccuracy)
+
+# Find the most accurate value of K
+
+dataBreaches7KValueMatrix <- matrix(data = NA,
+                                    nrow = 0,
+                                    ncol = 2)
+
+colnames(dataBreaches7KValueMatrix) <- c("k value", "Predictive Accuracy")
+for (kValue in 1:nrow(dataBreaches7Training)) {
+  if(kValue %% 2 != 0) {
+    kNearestMaliciousActorPrediction <- knn(train = dataBreaches7Training,
+                               test = dataBreaches7Testing,
+                               cl = dataBreaches7TrainingLabels$MaliciousActor,
+                               k = kValue)
+    dataBreaches7ConfusionMatrix <-
+      table(dataBreaches7TestingLabels$MaliciousActor,
+            kNearestMaliciousActorPrediction)
+    predictiveAccuracy <- sum(diag(dataBreaches7ConfusionMatrix)) /
+      nrow(dataBreaches7Testing)
+    dataBreaches7KValueMatrix <- rbind(dataBreaches7KValueMatrix,
+                                       c(kValue, predictiveAccuracy))
+  }
+}
+print(dataBreaches7KValueMatrix)
+
+#  End of k-Nearest Neighbor Code-------------------------
