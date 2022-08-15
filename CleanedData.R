@@ -82,5 +82,9 @@ dataBreachesDataFrame <- dataBreachesDataFrame %>%
            Method == "accidental leak" ~ 0,
            Method == "lost device" ~ 0))
 
+# remove Method column from the data frame
+dataBreachesDataFrame <- dataBreachesDataFrame %>%  
+  select(-Method)
+
 # convert data frame back into dataBreaches tibble
 dataBreaches <- as_tibble(dataBreachesDataFrame)
