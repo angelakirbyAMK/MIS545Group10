@@ -550,6 +550,11 @@ dataBreaches <- dataBreaches %>%
   mutate(LogRecordsLostScaled = (LogRecordsLost - min(LogRecordsLost)) /
            (max(LogRecordsLost) - min(LogRecordsLost)))
 
+# Scale the Year features from 0 to 1
+dataBreaches <- dataBreaches %>%
+  mutate(YearScaled = (Year - min(Year)) /
+           (max(Year) - min(Year)))
+
 # The set.seed() function is used to ensure that we can get the same result
 # every time we run a random sampling process.
 set.seed(1234)
@@ -569,7 +574,7 @@ dataBreachesNeuralNetTesting <- dataBreaches[-sampleSetNeuralNet, ]
 dataBreachesNeuralNet <- neuralnet(
   formula = MaliciousActor ~ LogRecordsLostScaled + TypeCredit.Card.Info + 
     TypeEmail.Online.Info + TypeFull.Details + TypeHealth.Personal.Records +
-    TypeSSN.Personal.Details,
+    TypeSSN.Personal.Details + Year,
   data = dataBreachesNeuralNetTraining,
   hidden = 3,
   act.fct = "logistic",
