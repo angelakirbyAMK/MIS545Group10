@@ -545,6 +545,11 @@ library(neuralnet)
 # Display the dataBreaches summary
 summary(dataBreaches)
 
+# Create GovernmentSector column to discretize Sector into Government and 
+# Non-Government
+dataBreaches <- dataBreaches %>%
+  mutate(GovernmentSector = grepl("government|military", Sector))
+
 # Scale the LogRecordsLost feature from 0 to 1
 dataBreaches <- dataBreaches %>%
   mutate(LogRecordsLostScaled = (LogRecordsLost - min(LogRecordsLost)) /
@@ -574,7 +579,7 @@ dataBreachesNeuralNetTesting <- dataBreaches[-sampleSetNeuralNet, ]
 dataBreachesNeuralNet <- neuralnet(
   formula = MaliciousActor ~ LogRecordsLostScaled + TypeCredit.Card.Info + 
     TypeEmail.Online.Info + TypeFull.Details + TypeHealth.Personal.Records +
-    TypeSSN.Personal.Details + Year,
+    TypeSSN.Personal.Details + Year + GovernmentSector,
   data = dataBreachesNeuralNetTraining,
   hidden = 3,
   act.fct = "logistic",
