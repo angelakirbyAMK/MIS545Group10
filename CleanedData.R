@@ -3,6 +3,10 @@
 
 library(tidyverse)
 library(dummies)
+library(smotefamily)
+library(corrplot)
+library(olsrr)
+library(class)
 
 # remember to set to your own working directory before running
 setwd("/Users/Straight_As/Documents/UA/MIS/Summer2022/MIS545/GroupProject")
