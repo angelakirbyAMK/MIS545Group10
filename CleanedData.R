@@ -532,3 +532,158 @@ for (kValue in 1:nrow(dataBreaches7Training)) {
 print(dataBreaches7KValueMatrix)
 
 #  End of k-Nearest Neighbor Code-------------------------
+
+
+
+# begin neural network code - Angela ---------------------
+
+# install.packages("neuralnet")
+
+# Load necessary libraries
+library(neuralnet)
+
+# Display the dataBreaches summary
+summary(dataBreaches)
+
+# Scale the LogRecordsLost feature from 0 to 1
+dataBreaches <- dataBreaches %>%
+  mutate(LogRecordsLostScaled = (LogRecordsLost - min(LogRecordsLost)) /
+           (max(LogRecordsLost) - min(LogRecordsLost)))
+
+# The set.seed() function is used to ensure that we can get the same result
+# every time we run a random sampling process.
+set.seed(1234)
+
+# Split the data into training and testing
+sampleSetNeuralNet <- sample(nrow(dataBreaches),
+                             round(nrow(dataBreaches) * 0.75),
+                             replace = FALSE)
+
+# Put the records from the 75% sample into dataBreachesNeuralNetTraining
+dataBreachesNeuralNetTraining <- dataBreaches[sampleSetNeuralNet, ]
+
+# Put the records from the 25% sample into dataBreachesNeuralNetTesting
+dataBreachesNeuralNetTesting <- dataBreaches[-sampleSetNeuralNet, ]
+
+# Generate the neural network
+dataBreachesNeuralNet <- neuralnet(
+  formula = MaliciousActor ~ LogRecordsLostScaled + TypeCredit.Card.Info + 
+    TypeEmail.Online.Info + TypeFull.Details + TypeHealth.Personal.Records +
+    TypeSSN.Personal.Details,
+  data = dataBreachesNeuralNetTraining,
+  hidden = 3,
+  act.fct = "logistic",
+  linear.output = FALSE)
+
+# Display the neural network results
+print(dataBreachesNeuralNet$result.matrix)
+
+# Visualize the neural network
+plot(dataBreachesNeuralNet)
+
+# Generate probabilities on the dataBreachesNeuralNetTesting dataset
+dataBreachesProbability <- compute(dataBreachesNeuralNet,
+                                   dataBreachesNeuralNetTesting)
+
+# Display predictions from the testing dataset on the console
+print(dataBreachesProbability$net.result)
+
+# Convert probability predictions into 0/1 predictions
+dataBreachesPrediction <-
+  ifelse(dataBreachesProbability$net.result > 0.5, 1, 0)
+
+# Display the predictions on the console
+print(dataBreachesPrediction)
+
+# Evaluate the model by forming a confusion matrix
+dataBreachesConfusionMatrix <- table(dataBreachesNeuralNetTesting$MaliciousActor,
+                                     dataBreachesPrediction)
+
+# Display the predictions on the console
+print(dataBreachesConfusionMatrix)
+
+# Calculate the model predictive accuracy
+predictiveAccuracy <- sum(diag(dataBreachesConfusionMatrix)) /
+  nrow(dataBreachesNeuralNetTesting)
+
+# Display the predictive accuracy on the console
+print(predictiveAccuracy)
+
+
+# end neural network code --------------------------------
+
+
+# begin neural network code (Angela) ---------------------
+
+# install.packages("neuralnet")
+
+library(neuralnet)
+
+# Display the dataBreaches summary
+summary(dataBreaches)
+
+# Scale the LogRecordsLost feature from 0 to 1
+dataBreaches <- dataBreaches %>%
+  mutate(LogRecordsLostScaled = (LogRecordsLost - min(LogRecordsLost)) /
+           (max(LogRecordsLost) - min(LogRecordsLost)))
+
+# The set.seed() function is used to ensure that we can get the same result
+# every time we run a random sampling process.
+set.seed(1234)
+
+# Split the data into training and testing
+sampleSetNeuralNet <- sample(nrow(dataBreaches),
+                             round(nrow(dataBreaches) * 0.75),
+                             replace = FALSE)
+
+# Put the records from the 75% sample into dataBreachesNeuralNetTraining
+dataBreachesNeuralNetTraining <- dataBreaches[sampleSetNeuralNet, ]
+
+# Put the records from the 25% sample into dataBreachesNeuralNetTesting
+dataBreachesNeuralNetTesting <- dataBreaches[-sampleSetNeuralNet, ]
+
+# Generate the neural network
+dataBreachesNeuralNet <- neuralnet(
+  formula = MaliciousActor ~ LogRecordsLostScaled + TypeCredit.Card.Info + 
+    TypeEmail.Online.Info + TypeFull.Details + TypeHealth.Personal.Records +
+    TypeSSN.Personal.Details,
+  data = dataBreachesNeuralNetTraining,
+  hidden = 3,
+  act.fct = "logistic",
+  linear.output = FALSE)
+
+# Display the neural network results
+print(dataBreachesNeuralNet$result.matrix)
+
+# Visualize the neural network
+plot(dataBreachesNeuralNet)
+
+# Generate probabilities on the dataBreachesNeuralNetTesting dataset
+dataBreachesProbability <- compute(dataBreachesNeuralNet,
+                                   dataBreachesNeuralNetTesting)
+
+# Display predictions from the testing dataset on the console
+print(dataBreachesProbability$net.result)
+
+# Convert probability predictions into 0/1 predictions
+dataBreachesPrediction <-
+  ifelse(dataBreachesProbability$net.result > 0.5, 1, 0)
+
+# Display the predictions on the console
+print(dataBreachesPrediction)
+
+# Evaluate the model by forming a confusion matrix
+dataBreachesConfusionMatrix <- table(dataBreachesNeuralNetTesting$MaliciousActor,
+                                     dataBreachesPrediction)
+
+# Display the predictions on the console
+print(dataBreachesConfusionMatrix)
+
+# Calculate the model predictive accuracy
+predictiveAccuracy <- sum(diag(dataBreachesConfusionMatrix)) /
+  nrow(dataBreachesNeuralNetTesting)
+
+# Display the predictive accuracy on the console
+print(predictiveAccuracy)
+
+# end of neural network code -------------------------------
