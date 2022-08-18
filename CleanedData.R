@@ -579,7 +579,7 @@ dataBreachesNeuralNetTesting <- dataBreaches[-sampleSetNeuralNet, ]
 dataBreachesNeuralNet <- neuralnet(
   formula = MaliciousActor ~ LogRecordsLostScaled + TypeCredit.Card.Info + 
     TypeEmail.Online.Info + TypeFull.Details + TypeHealth.Personal.Records +
-    TypeSSN.Personal.Details + Year + GovernmentSector,
+    TypeSSN.Personal.Details + YearScaled + GovernmentSector,
   data = dataBreachesNeuralNetTraining,
   hidden = 3,
   act.fct = "logistic",
