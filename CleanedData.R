@@ -801,3 +801,19 @@ predictiveAccuracy <- sum(diag(dataBreachesNaiveBayesConfusionMatrix)) /
 print(predictiveAccuracy)
 
 #END NAIVE BAYES------------------------------------------------------
+
+#Histogram for main data set........(Note - only 3 of 4 independent variable show (Sector is not numeric)) ----------------------------------
+
+displayAllHistograms <- function(tibbleDataset) {
+  tibbleDataset %>%
+    keep(is.numeric) %>%
+    gather() %>%
+    ggplot() + geom_histogram(mapping = aes(x=value,fill=key),
+                              color = "black") +
+    facet_wrap(~ key, scales = "free") +
+    theme_minimal()
+}
+
+displayAllHistograms(dataBreaches)
+
+#END Histogram for data set-----------------------------------------------------------
