@@ -93,19 +93,7 @@ dataBreachesDataFrame <- dataBreachesDataFrame %>%
 # convert data frame back into dataBreaches tibble
 dataBreaches <- as_tibble(dataBreachesDataFrame)
 
-# Convert Method to Malicious Actor (1 = Malicious Actor & 
-# 0 = Non-Malicious Actor) - Jordan
-
-dataBreachesDataFrame3 <-data.frame(dataBreaches3)
-dataBreachesDataFrame4 <- dataBreachesDataFrame3 %>%
-  mutate(MaliciousActor = case_when
-         (Method == "inside job" ~ 1,
-           Method == "hacked" ~ 1,
-           Method == "poor security" ~ 1,
-           Method == "accidental leak" ~ 0,
-           Method == "lost device" ~ 0))          
-dataBreaches4 <- as_tibble(dummy.data.frame(data = dataBreachesDataFrame4,
-                                            names = "Type"))
+#### end of preprocessing ----------------------------------------------
 
 # Logistic Regression & Corr Plot - Jordan-------------------------------
 
