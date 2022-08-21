@@ -545,8 +545,8 @@ library(neuralnet)
 # Display the dataBreaches summary
 summary(dataBreaches)
 
-# Create GovernmentSector column to discretize Sector into Government and 
-# Non-Government
+# Create GovernmentSector column to discretize Sector into government 
+# (including military) and non-government
 dataBreachesNN <- dataBreaches %>%
   mutate(GovernmentSector = grepl("government|military", Sector))
 
@@ -591,7 +591,7 @@ print(dataBreachesNeuralNet$result.matrix)
 # Visualize the neural network
 plot(dataBreachesNeuralNet)
 
-# Generate probabilities on the dataBreachesNeuralNetTesting dataset
+# Generate probabilities on the dataBreachesTestingNN dataset
 dataBreachesProbabilityNN <- compute(dataBreachesNeuralNet,
                                    dataBreachesTestingNN)
 
