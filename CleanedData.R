@@ -547,16 +547,16 @@ summary(dataBreaches)
 
 # Create GovernmentSector column to discretize Sector into Government and 
 # Non-Government
-dataBreaches <- dataBreaches %>%
+dataBreachesNN <- dataBreaches %>%
   mutate(GovernmentSector = grepl("government|military", Sector))
 
 # Scale the LogRecordsLost feature from 0 to 1
-dataBreaches <- dataBreaches %>%
+dataBreachesNN <- dataBreachesNN %>%
   mutate(LogRecordsLostScaled = (LogRecordsLost - min(LogRecordsLost)) /
            (max(LogRecordsLost) - min(LogRecordsLost)))
 
 # Scale the Year features from 0 to 1
-dataBreaches <- dataBreaches %>%
+dataBreachesNN <- dataBreachesNN %>%
   mutate(YearScaled = (Year - min(Year)) /
            (max(Year) - min(Year)))
 
@@ -565,22 +565,22 @@ dataBreaches <- dataBreaches %>%
 set.seed(1234)
 
 # Split the data into training and testing
-sampleSetNeuralNet <- sample(nrow(dataBreaches),
-                             round(nrow(dataBreaches) * 0.75),
+sampleSetNN <- sample(nrow(dataBreachesNN),
+                             round(nrow(dataBreachesNN) * 0.75),
                              replace = FALSE)
 
-# Put the records from the 75% sample into dataBreachesNeuralNetTraining
-dataBreachesNeuralNetTraining <- dataBreaches[sampleSetNeuralNet, ]
+# Put the records from the 75% sample into dataBreachesTrainingNN
+dataBreachesTrainingNN <- dataBreachesNN[sampleSetNN, ]
 
-# Put the records from the 25% sample into dataBreachesNeuralNetTesting
-dataBreachesNeuralNetTesting <- dataBreaches[-sampleSetNeuralNet, ]
+# Put the records from the 25% sample into dataBreachesTestingNN
+dataBreachesTestingNN <- dataBreachesNN[-sampleSetNN, ]
 
 # Generate the neural network
 dataBreachesNeuralNet <- neuralnet(
   formula = MaliciousActor ~ LogRecordsLostScaled + TypeCredit.Card.Info + 
     TypeEmail.Online.Info + TypeFull.Details + TypeHealth.Personal.Records +
     TypeSSN.Personal.Details + YearScaled + GovernmentSector,
-  data = dataBreachesNeuralNetTraining,
+  data = dataBreachesTrainingNN,
   hidden = 3,
   act.fct = "logistic",
   linear.output = FALSE)
@@ -592,32 +592,32 @@ print(dataBreachesNeuralNet$result.matrix)
 plot(dataBreachesNeuralNet)
 
 # Generate probabilities on the dataBreachesNeuralNetTesting dataset
-dataBreachesProbability <- compute(dataBreachesNeuralNet,
-                                   dataBreachesNeuralNetTesting)
+dataBreachesProbabilityNN <- compute(dataBreachesNeuralNet,
+                                   dataBreachesTestingNN)
 
 # Display predictions from the testing dataset on the console
-print(dataBreachesProbability$net.result)
+print(dataBreachesProbabilityNN$net.result)
 
 # Convert probability predictions into 0/1 predictions
-dataBreachesPrediction <-
-  ifelse(dataBreachesProbability$net.result > 0.5, 1, 0)
+dataBreachesPredictionNN <-
+  ifelse(dataBreachesProbabilityNN$net.result > 0.5, 1, 0)
 
 # Display the predictions on the console
-print(dataBreachesPrediction)
+print(dataBreachesPredictionNN)
 
 # Evaluate the model by forming a confusion matrix
-dataBreachesConfusionMatrix <- table(dataBreachesNeuralNetTesting$MaliciousActor,
-                                     dataBreachesPrediction)
+dataBreachesConfusionMatrixNN <- table(dataBreachesTestingNN$MaliciousActor,
+                                     dataBreachesPredictionNN)
 
 # Display the predictions on the console
-print(dataBreachesConfusionMatrix)
+print(dataBreachesConfusionMatrixNN)
 
 # Calculate the model predictive accuracy
-predictiveAccuracy <- sum(diag(dataBreachesConfusionMatrix)) /
-  nrow(dataBreachesNeuralNetTesting)
+predictiveAccuracyNN <- sum(diag(dataBreachesConfusionMatrixNN)) /
+  nrow(dataBreachesTestingNN)
 
 # Display the predictive accuracy on the console
-print(predictiveAccuracy)
+print(predictiveAccuracyNN)
 
 
 # end neural network code --------------------------------
