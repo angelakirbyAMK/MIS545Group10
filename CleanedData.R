@@ -22,7 +22,7 @@ library(class)
 # remember to set to your own working directory before running
 setwd("/Users/Straight_As/Documents/UA/MIS/Summer2022/MIS545/GroupProject")
 
-# create tibble from csv file (without taking the log of RecordsLost)
+# create tibble from csv file
 dataBreaches <- read_csv(file = "Balloon Race_ Data Breaches - Prepped.csv", 
                          col_types = "ciiffi",
                          col_names = TRUE)
@@ -103,6 +103,9 @@ dataBreachesDataFrame <- dataBreachesDataFrame %>%
 
 # convert data frame back into dataBreaches tibble
 dataBreaches <- as_tibble(dataBreachesDataFrame)
+
+# display summary of tibble on the console
+summary(dataBreaches)
 
 #### end of preprocessing ----------------------------------------------
 
