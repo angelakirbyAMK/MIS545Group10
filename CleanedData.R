@@ -174,6 +174,12 @@ dataBreachesDataFrameLR <- dataBreachesDataFrameLR %>%
 # create new tibble with cleaned dataframe
 dataBreachesLR <- as_tibble(dataBreachesDataFrameLR)
 
+# Create a corrplot
+corrplot(round(cor(dataBreachesLR), 2),
+         method = "shade",
+         type = "lower",
+         title = "Corr Plot of Data Breaches - Group 10")
+
 # Set seed
 set.seed(5654)
 
