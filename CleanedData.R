@@ -12,6 +12,8 @@
 # install.packages(tidyverse)
 # install.packages(dummies)
 # install.packages("neuralnet")
+# install.packages(rpart)
+# install.packages(rpart.plot)
 
 library(tidyverse)
 library(dummies)
@@ -20,6 +22,8 @@ library(corrplot)
 library(olsrr)
 library(class)
 library(neuralnet)
+library(rpart)
+library(rpart.plot)
 
 # remember to set to your own working directory before running
 setwd("/Users/Straight_As/Documents/UA/MIS/Summer2022/MIS545/GroupProject")
@@ -319,19 +323,7 @@ sum(diag(dataBreachesLRMaliciousActorConfusionMatrix)) /
 
 # END OF LOGISTIC REGRESSION MODEL---------------
 
-# DECISION TREE Michael W -------------------------
-# DECISION TREE Michael W  -------------------------
-# DECISION TREE Michael W  -------------------------
-
-# Install rpart.plot package
-# install.packages("rpart.plot")
-
-# Load rpart.plot packages
-library(rpart.plot)
-
-
-# Remove unnecssary features from the root tibble
-dataBreachesDecisionTree <- dataBreaches %>% select(-Organization,-Method)
+#  DECISION TREE Michael W  -------------------------
 
 # Split data intto training and testing
 # The set.seed() function is used to ensure that we can get the same result
@@ -339,47 +331,49 @@ dataBreachesDecisionTree <- dataBreaches %>% select(-Organization,-Method)
 set.seed(1589)
 
 # Create a vector of 75% randomly sampled rows from the original dataset
-sampleSetDecisionTree <- sample(nrow(dataBreachesDecisionTree),
-                    round(nrow(dataBreachesDecisionTree) * 0.75),
-                    replace = FALSE)
+sampleSetDT <- sample(nrow(dataBreaches),
+                      round(nrow(dataBreaches) * 0.75),
+                      replace = FALSE)
 
 # Put records from 75% sample into dataBreaches Training    
-dataBreachesTraining <- dataBreachesDecisionTree[sampleSetDecisionTree, ]
+dataBreachesTrainingDT <- dataBreaches[sampleSetDT, ]
 
 # Put the 25% remaining records into dataBreachesTesting
-dataBreachesTesting <- dataBreachesDecisionTree[-sampleSetDecisionTree, ]
+dataBreachesTestingDT <- dataBreaches[-sampleSetDT, ]
 
 # Train the decision tree model using the training data set. Note the complexity
 # parameter of 0.01 as the default value.
-dataBreachesDecisionTreeModel <- rpart(formula = MaliciousActor ~ .,
-                                    method = "class",
-                                    cp = 0.05,
-                                    data = dataBreachesTraining)
+dataBreachesModelDT <- rpart(formula = MaliciousActor ~ .,
+                             method = "class",
+                             cp = 0.05,
+                             data = dataBreachesTrainingDT)
 
 # Display the decision tree plot
-rpart.plot(dataBreachesDecisionTreeModel)
+rpart.plot(dataBreachesModelDT)
 
 # Predict classes for each record in the testindatasets::
-dataBreachesPrediction <- predict(dataBreachesDecisionTreeModel,
-                                  dataBreachesTesting,
-                               type = "class")
+dataBreachesPredictionDT <- predict(dataBreachesModelDT,
+                                    dataBreachesTestingDT,
+                                    type = "class")
 
 # Display the predictions from dataBreachesPrediction to the console
-print(dataBreachesPrediction)
+print(dataBreachesPredictionDT)
 
 # Evaluate the model by forming a confusion matrix
-dataBreachesConfusionMatrix <- table(dataBreachesTesting$MaliciousActor,
-                                  dataBreachesPrediction)
+dataBreachesConfusionMatrixDT <- table(dataBreachesTestingDT$MaliciousActor,
+                                       dataBreachesPredictionDT)
 
 # Display the dataBreachesConfusionMatrix to the console
-print(dataBreachesConfusionMatrix )
+print(dataBreachesConfusionMatrixDT)
 
 # Calculate the model predicitive accuracy
-predictiveAccuracy <- sum(diag(dataBreachesConfusionMatrix)) /
-  nrow(dataBreachesTesting)
+predictiveAccuracyDT <- sum(diag(dataBreachesConfusionMatrixDT)) /
+  nrow(dataBreachesTestingDT)
 
 # Display the predictive accuracy on the console
-print(predictiveAccuracy)
+print(predictiveAccuracyDT)
+
+# End Decision Tree Model -----------------------------
 
 # k-Nearest neighbor Model - Jordan----------------------
 
