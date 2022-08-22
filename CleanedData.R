@@ -1,3 +1,14 @@
+# Naming convention for model specific tibbles and dataframes
+# dataBreachesXY
+# For X:
+# NN = Neural Network
+# LR = Logisitc Regression
+# DT = Decision Tree
+# NB = Naive Bayes
+# KNN = K Nearest Neighbor
+# For Y:
+# Additional description as required.
+
 # install.packages(tidyverse)
 # install.packages(dummies)
 
@@ -95,117 +106,105 @@ dataBreaches <- as_tibble(dataBreachesDataFrame)
 
 #### end of preprocessing ----------------------------------------------
 
-# Logistic Regression & Corr Plot - Jordan-------------------------------
+#### Logistic Regression Start of Code (Jordan) ------------------------
 
-# dummy sector
-
-dataBreaches5 <- as_tibble(dummy.data.frame(data = dataBreachesDataFrame4,
+# use dummy function for sector columns
+dataBreachesLR <- as_tibble(dummy.data.frame(data = dataBreachesDataFrame,
                                             names = "Sector"))
 
-# Convert columns from dummy to logical
-
-dataBreaches5$Sectorfinancial <- as.logical(dataBreaches5$Sectorfinancial)
-dataBreaches5$Sectortech <- as.logical(dataBreaches5$Sectortech)
-dataBreaches5$Sectorretail <- as.logical(dataBreaches5$Sectorretail)
-dataBreaches5$Sectorgovernment <- as.logical(dataBreaches5$Sectorgovernment)
-dataBreaches5$SectorNGO <- as.logical(dataBreaches5$SectorNGO)
-dataBreaches5$Sectorweb <- as.logical(dataBreaches5$Sectorweb)
-dataBreaches5$Sectormisc <- as.logical(dataBreaches5$Sectormisc)
-dataBreaches5$Sectortransport <- as.logical(dataBreaches5$Sectortransport)
-dataBreaches5$Sectorlegal <- as.logical(dataBreaches5$Sectorlegal)
-dataBreaches5$Sectorgaming <- as.logical(dataBreaches5$Sectorgaming)
-dataBreaches5$Sectortelecoms <- as.logical(dataBreaches5$Sectortelecoms)
-dataBreaches5$Sectorfinance <- as.logical(dataBreaches5$Sectorfinance)
-dataBreaches5$Sectorhealth <- as.logical(dataBreaches5$Sectorhealth)
-dataBreaches5$`Sectormisc, health` <-
-  as.logical(dataBreaches5$`Sectormisc, health`)
-dataBreaches5$`Sectortech, health` <-
-  as.logical(dataBreaches5$`Sectortech, health`)
-dataBreaches5$Sectoracademic <- as.logical(dataBreaches5$Sectoracademic)
-dataBreaches5$`Sectortech, app` <- as.logical(dataBreaches5$`Sectortech, app`)
-dataBreaches5$`Sectorweb, tech` <- as.logical(dataBreaches5$`Sectorweb, tech`)
-dataBreaches5$`Sectortech, web` <- as.logical(dataBreaches5$`Sectortech, web`)
-dataBreaches5$`Sectorgovernment, health` <-
-  as.logical(dataBreaches5$`Sectorgovernment, health`)
-dataBreaches5$`Sectorweb, military` <-
-  as.logical(dataBreaches5$`Sectorweb, military`)
-dataBreaches5$`Sectortech, retail` <-
-  as.logical(dataBreaches5$`Sectortech, retail`)
-dataBreaches5$Sectormilitary <- as.logical(dataBreaches5$Sectormilitary)
-dataBreaches5$Sectorapp <- as.logical(dataBreaches5$Sectorapp)
-dataBreaches5$`Sectormilitary, health` <-
-  as.logical(dataBreaches5$`Sectormilitary, health`)
-dataBreaches5$`Sectorweb, gaming` <-
-  as.logical(dataBreaches5$`Sectorweb, gaming`)
-dataBreaches5$`Sectorgovernment, military` <-
-  as.logical(dataBreaches5$`Sectorgovernment, military`)
-dataBreaches5$TypeCredit.Card.Info <-
-  as.logical(dataBreaches5$TypeCredit.Card.Info)
-dataBreaches5$TypeEmail.Online.Info <-
-  as.logical(dataBreaches5$TypeEmail.Online.Info)
-dataBreaches5$TypeFull.Details <- as.logical(dataBreaches5$TypeFull.Details)
-dataBreaches5$TypeHealth.Personal.Records <-
-  as.logical(dataBreaches5$TypeHealth.Personal.Records)
-dataBreaches5$TypeSSN.Personal.Details <-
-  as.logical(dataBreaches5$TypeSSN.Personal.Details)
-dataBreaches5$TypeUnknown <- as.logical(dataBreaches5$TypeUnknown)
-dataBreaches5$MaliciousActor <- as.logical(dataBreaches5$MaliciousActor)
+# Convert columns from dummy (1 & 0) to logical
+dataBreachesLR$Sectorfinancial <- as.logical(dataBreachesLR$Sectorfinancial)
+dataBreachesLR$Sectortech <- as.logical(dataBreachesLR$Sectortech)
+dataBreachesLR$Sectorretail <- as.logical(dataBreachesLR$Sectorretail)
+dataBreachesLR$Sectorgovernment <- as.logical(dataBreachesLR$Sectorgovernment)
+dataBreachesLR$SectorNGO <- as.logical(dataBreachesLR$SectorNGO)
+dataBreachesLR$Sectorweb <- as.logical(dataBreachesLR$Sectorweb)
+dataBreachesLR$Sectormisc <- as.logical(dataBreachesLR$Sectormisc)
+dataBreachesLR$Sectortransport <- as.logical(dataBreachesLR$Sectortransport)
+dataBreachesLR$Sectorlegal <- as.logical(dataBreachesLR$Sectorlegal)
+dataBreachesLR$Sectorgaming <- as.logical(dataBreachesLR$Sectorgaming)
+dataBreachesLR$Sectortelecoms <- as.logical(dataBreachesLR$Sectortelecoms)
+dataBreachesLR$Sectorfinance <- as.logical(dataBreachesLR$Sectorfinance)
+dataBreachesLR$Sectorhealth <- as.logical(dataBreachesLR$Sectorhealth)
+dataBreachesLR$`Sectormisc, health` <-
+  as.logical(dataBreachesLR$`Sectormisc, health`)
+dataBreachesLR$`Sectortech, health` <-
+  as.logical(dataBreachesLR$`Sectortech, health`)
+dataBreachesLR$Sectoracademic <- as.logical(dataBreachesLR$Sectoracademic)
+dataBreachesLR$`Sectortech, app` <- as.logical(dataBreachesLR$`Sectortech, app`)
+dataBreachesLR$`Sectorweb, tech` <- as.logical(dataBreachesLR$`Sectorweb, tech`)
+dataBreachesLR$`Sectortech, web` <- as.logical(dataBreachesLR$`Sectortech, web`)
+dataBreachesLR$`Sectorgovernment, health` <-
+  as.logical(dataBreachesLR$`Sectorgovernment, health`)
+dataBreachesLR$`Sectorweb, military` <-
+  as.logical(dataBreachesLR$`Sectorweb, military`)
+dataBreachesLR$`Sectortech, retail` <-
+  as.logical(dataBreachesLR$`Sectortech, retail`)
+dataBreachesLR$Sectormilitary <- as.logical(dataBreachesLR$Sectormilitary)
+dataBreachesLR$Sectorapp <- as.logical(dataBreachesLR$Sectorapp)
+dataBreachesLR$`Sectormilitary, health` <-
+  as.logical(dataBreachesLR$`Sectormilitary, health`)
+dataBreachesLR$`Sectorweb, gaming` <-
+  as.logical(dataBreachesLR$`Sectorweb, gaming`)
+dataBreachesLR$`Sectorgovernment, military` <-
+  as.logical(dataBreachesLR$`Sectorgovernment, military`)
+dataBreachesLR$TypeCredit.Card.Info <-
+  as.logical(dataBreachesLR$TypeCredit.Card.Info)
+dataBreachesLR$TypeEmail.Online.Info <-
+  as.logical(dataBreachesLR$TypeEmail.Online.Info)
+dataBreachesLR$TypeFull.Details <- as.logical(dataBreachesLR$TypeFull.Details)
+dataBreachesLR$TypeHealth.Personal.Records <-
+  as.logical(dataBreachesLR$TypeHealth.Personal.Records)
+dataBreachesLR$TypeSSN.Personal.Details <-
+  as.logical(dataBreachesLR$TypeSSN.Personal.Details)
+dataBreachesLR$MaliciousActor <- as.logical(dataBreachesLR$MaliciousActor)
 
 # create dataframe from logical data
-
-dataBreachesDataFrame6 <- data.frame(dataBreaches5)
+dataBreachesDataFrameLR <- data.frame(dataBreachesLR)
 
 # eliminate missing data rows and create new dataframe
-
-dataBreachesDataFrame7 <- dataBreachesDataFrame6 %>%
+dataBreachesDataFrameLR <- dataBreachesDataFrameLR %>%
   filter(!is.na(MaliciousActor)) %>%
-  filter(!is.na(LogRecordsLost)) %>%
-  filter(!is.na(RecordsLost))
+  filter(!is.na(LogRecordsLost))
 
-# eliminate uneeded columns and create new dataframe
-
-dataBreachesDataFrame8 <- dataBreachesDataFrame7 %>%
-  select(-c(Organization, Year, Sector, Method, DataSensitivity))
+# eliminate unneeded columns and create new dataframe
+dataBreachesDataFrameLR <- dataBreachesDataFrameLR %>%
+  select(-c(Sector))
 
 # create new tibble with cleaned dataframe
+dataBreachesLR <- as_tibble(dataBreachesDataFrameLR)
 
-dataBreaches6 <- as_tibble(dataBreachesDataFrame8)
-
-# create a corrplot
-
-round(cor(dataBreaches6), 2)
-
-corrplot(round(cor(dataBreaches6), 2),
-         method = "shade",
-         type = "lower",
-         title = "Corr Plot of Data Breaches - Group 10")
-
-# Create training and testing data sets
-
+# Set seed
 set.seed(5654)
 
-sampleSet <- sample(nrow(dataBreaches6),
-                    round(nrow(dataBreaches6) * 0.75),
+# Create sample set
+sampleSet <- sample(nrow(dataBreachesLR),
+                    round(nrow(dataBreachesLR) * 0.75),
                     replace = FALSE)
 
-dataBreaches6Training <- dataBreaches6[sampleSet, ]
+# Create Training Set 
+dataBreachesLRTraining <- dataBreachesLR[sampleSet, ]
 
-dataBreaches6Testing <- dataBreaches6[-sampleSet, ]
+# Create Testing Set
+dataBreachesLRTesting <- dataBreachesLR[-sampleSet, ]
 
-summary(dataBreaches6Training$MaliciousActor)
+# Show summary of Malicious Actor feature
+summary(dataBreachesLRTraining$MaliciousActor)
 
-# fix class imbalance
+# Locate ideal smote dup size
+classImbalanceMagnitude <- 259/51
 
-classImbalanceMagnitude <- 254/56
-
-dataBreaches6TrainingSmoted <-
-  tibble(SMOTE(X = data.frame(dataBreaches6Training),
-               target = dataBreaches6Training$MaliciousActor,
+# Use smote on data to correct class imbalance of malicious actor
+dataBreachesLRTrainingSmoted <-
+  tibble(SMOTE(X = data.frame(dataBreachesLRTraining),
+               target = dataBreachesLRTraining$MaliciousActor,
                dup_size = 4)$data)
 
-summary(dataBreaches6TrainingSmoted)
+# Show summary of smoted training set
+summary(dataBreachesLRTrainingSmoted)
 
-dataBreaches6TrainingSmoted <- dataBreaches6TrainingSmoted %>%
+# Change all sector and type features to logical
+dataBreachesLRTrainingSmoted <- dataBreachesLRTrainingSmoted %>%
   mutate(Sectorfinancial = as.logical(Sectorfinancial),
          Sectortech = as.logical(Sectortech),
          Sectorretail = as.logical(Sectorretail),
@@ -239,66 +238,64 @@ dataBreaches6TrainingSmoted <- dataBreaches6TrainingSmoted %>%
          TypeFull.Details = as.logical(TypeFull.Details),
          TypeHealth.Personal.Records = as.logical(TypeHealth.Personal.Records),
          TypeSSN.Personal.Details = as.logical(TypeSSN.Personal.Details),
-         TypeUnknown = as.logical(TypeUnknown),
          MaliciousActor = as.logical(MaliciousActor))
 
-dataBreaches6TrainingSmoted <- dataBreaches6TrainingSmoted %>%
+# Remove class feature
+dataBreachesLRTrainingSmoted <- dataBreachesLRTrainingSmoted %>%
   select(-class)
 
-summary(dataBreaches6TrainingSmoted)
+# Show summary of training smoted data
+summary(dataBreachesLRTrainingSmoted)
 
-# create logistic regression model
-
+# Create logistic regression model
 dataBreachesLogisticRegressionMaliciousActorModel <-
-  glm(data = dataBreaches6TrainingSmoted,
+  glm(data = dataBreachesLRTrainingSmoted,
       family = binomial,
       formula = MaliciousActor ~ .)
 
+# Show summary of logistic regression model
 summary(dataBreachesLogisticRegressionMaliciousActorModel)
 
-exp(coef(dataBreachesLogisticRegressionMaliciousActorModel)["RecordsLost"])
+# Show the probability of the most significant independent variable "Year"
+exp(coef(dataBreachesLogisticRegressionMaliciousActorModel)["Year"])
 
-# test logistic regression model
-
-dataBreachesMaliciousActorPrediction <-
+# Test logistic regression model
+dataBreachesLRMaliciousActorPrediction <-
   predict(dataBreachesLogisticRegressionMaliciousActorModel,
-          dataBreaches6Testing,
+          dataBreachesLRTesting,
           type = "response")
 
-print(dataBreachesMaliciousActorPrediction)
+# Display result of test
+print(dataBreachesLRMaliciousActorPrediction)
 
-dataBreachesMaliciousActorPrediction <-
-  ifelse(dataBreachesMaliciousActorPrediction >= 0.5, 1, 0)
+# Display result of test in 1 / 0
+dataBreachesLRMaliciousActorPrediction <-
+  ifelse(dataBreachesLRMaliciousActorPrediction >= 0.5, 1, 0)
+print(dataBreachesLRMaliciousActorPrediction)
 
-print(dataBreachesMaliciousActorPrediction)
+# create confusion matrix for logistic regression model
+dataBreachesLRMaliciousActorConfusionMatrix <-
+  table(dataBreachesLRTesting$MaliciousActor,
+        dataBreachesLRMaliciousActorPrediction)
 
-# create confusion matrix
+# Display confusion matrix
+print(dataBreachesLRMaliciousActorConfusionMatrix)
 
-dataBreachesMaliciousActorConfusionMatrix <-
-  table(dataBreaches6Testing$MaliciousActor,
-        dataBreachesMaliciousActorPrediction)
+# Display false positive rate
+dataBreachesLRMaliciousActorConfusionMatrix[1, 2] /
+  (dataBreachesLRMaliciousActorConfusionMatrix [1, 2] +
+     dataBreachesLRMaliciousActorConfusionMatrix[1, 1])
 
-print(dataBreachesMaliciousActorConfusionMatrix)
+# Display false negative rate
+dataBreachesLRMaliciousActorConfusionMatrix[2, 1] /
+  (dataBreachesLRMaliciousActorConfusionMatrix [2, 1] +
+     dataBreachesLRMaliciousActorConfusionMatrix[2, 2])
 
-# false positive rate
-
-dataBreachesMaliciousActorConfusionMatrix[1, 2] /
-  (dataBreachesMaliciousActorConfusionMatrix [1, 2] +
-     dataBreachesMaliciousActorConfusionMatrix[1, 1])
-
-# false negative rate
-
-dataBreachesMaliciousActorConfusionMatrix[2, 1] /
-  (dataBreachesMaliciousActorConfusionMatrix [2, 1] +
-     dataBreachesMaliciousActorConfusionMatrix[2, 2])
-
-# total predictive accuracy of logistic regression model
-
-sum(diag(dataBreachesMaliciousActorConfusionMatrix)) /
-  nrow(dataBreaches6Testing)
+# Display total predictive accuracy of logistic regression model
+sum(diag(dataBreachesLRMaliciousActorConfusionMatrix)) /
+  nrow(dataBreachesLRTesting)
 
 # END OF LOGISTIC REGRESSION MODEL---------------
-
 
 # DECISION TREE Michael W -------------------------
 # DECISION TREE Michael W  -------------------------
