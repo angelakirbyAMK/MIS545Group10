@@ -11,6 +11,7 @@
 
 # install.packages(tidyverse)
 # install.packages(dummies)
+# install.packages("neuralnet")
 
 library(tidyverse)
 library(dummies)
@@ -18,6 +19,7 @@ library(smotefamily)
 library(corrplot)
 library(olsrr)
 library(class)
+library(neuralnet)
 
 # remember to set to your own working directory before running
 setwd("/Users/Straight_As/Documents/UA/MIS/Summer2022/MIS545/GroupProject")
@@ -55,10 +57,6 @@ dataBreaches <- dataBreaches %>% mutate(DataSensitivity =
                                                 ifelse(is.na(DataSensitivity), 
                                                        2, DataSensitivity))
 
-
-##### add outliers here #####
-
-
 # normalize the RecordsLost feature by taking log10 of RecordsLost and putting 
 # into new column called LogRecordsLost 
 dataBreaches <- dataBreaches %>%
@@ -67,6 +65,21 @@ dataBreaches <- dataBreaches %>%
 # remove RecordsLost column from the tibble 
 dataBreaches <- dataBreaches %>%  
   select(-RecordsLost)
+
+# display summary of tibble on the console
+summary(dataBreaches)
+
+# determine outliers in LogRecordsLost feature
+# calculate outlier min and max and store into variables called outlierMin and 
+# outlierMax
+outlierMin <- quantile(dataBreaches$LogRecordsLost, .25) -
+  (IQR(dataBreaches$LogRecordsLost) * 1.5)
+outlierMax <- quantile(dataBreaches$LogRecordsLost, .75) +
+  (IQR(dataBreaches$LogRecordsLost) * 1.5)
+
+# Keep the outliers in the dataset, but add them to their own tibble
+dataBreachesOutliers <- dataBreaches %>%
+  filter(LogRecordsLost < outlierMin | LogRecordsLost > outlierMax)
 
 # create data frame using normalized tibble
 dataBreachesDataFrame <- data.frame(dataBreaches)
@@ -468,11 +481,6 @@ print(dataBreachesKNNKValueMatrix)
 
 
 # begin neural network code - Angela ---------------------
-
-# install.packages("neuralnet")
-
-# Load necessary libraries
-library(neuralnet)
 
 # Display the dataBreaches summary
 summary(dataBreaches)
