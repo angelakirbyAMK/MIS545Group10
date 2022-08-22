@@ -77,9 +77,9 @@ outlierMin <- quantile(dataBreaches$LogRecordsLost, .25) -
 outlierMax <- quantile(dataBreaches$LogRecordsLost, .75) +
   (IQR(dataBreaches$LogRecordsLost) * 1.5)
 
-# Keep the outliers in the dataset, but add them to their own tibble
-dataBreachesOutliers <- dataBreaches %>%
-  filter(LogRecordsLost < outlierMin | LogRecordsLost > outlierMax)
+# Remove outliers from the dataset (include only non-outliers)
+dataBreaches <- dataBreaches %>%
+  filter(LogRecordsLost >= outlierMin & LogRecordsLost <= outlierMax)
 
 # create data frame using normalized tibble
 dataBreachesDataFrame <- data.frame(dataBreaches)
