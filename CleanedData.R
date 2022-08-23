@@ -130,6 +130,34 @@ summary(dataBreaches)
 
 #### end of preprocessing ----------------------------------------------
 
+#### three interesting queries -----------------------------------------
+
+# Query1 - Has the number of data breach events with over 30,000 compromised 
+# records increased from the year 2004 to 2021?
+query1 <- dataBreaches %>%
+  filter(Year < 2022) %>%
+  group_by(Year) %>%
+  count()
+
+# create line graph graph of query 1
+ggplot(query1, aes(x = Year, y = n)) +
+  geom_line(color = "red", size = 2) +
+  ylab("Count of Events") +
+  theme_bw()
+
+# Query 2 - On average, did non-malicious attacks result in more or less 
+# compromised records than malicious attacks?
+query2 <- dataBreaches %>%
+  group_by(MaliciousActor) %>%
+  summarize(MinRecordsLost = min(LogRecordsLost),
+            MaxRecordsLost = max(LogRecordsLost),
+            MedianRecordsLost = median(LogRecordsLost),
+            AvgRecordsLost = mean(LogRecordsLost))
+
+# Query 3 - in progress
+
+# end of queries -------------------------------------------------------
+
 #### Logistic Regression Start of Code (Jordan) ------------------------
 
 # use dummy function for sector columns
