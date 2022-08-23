@@ -562,41 +562,33 @@ print(predictiveAccuracyNN)
 
 #NAIVE BAYES -------------------------------------------
 
-# install.packages("tidyverse")
-# install.packages("dummies")
-# install.packages("corrplot")
-# install.packages("olsrr")
-# install.packages("rpart")
-# install.packages("rpart.plot")
-# install.packages("dplyr")
+# install.packages(tidyverse)
+# install.packages(dummies)
 # install.packages("e1071")
-
 
 library(tidyverse)
 library(dummies)
 library(corrplot)
 library(olsrr)
-library(rpart)
-library(rpart.plot)
-library(dbplyr)
+library(class)
 library(e1071)
 
 # remember to set to your own working directory before running
-setwd("~/Final Project")
+setwd("~/NaiveBayes")
 
 # create tibble from csv file (without taking the log of RecordsLost)
-dataBreaches <- read_csv(file = "Balloon Race Data Breaches Prepped.csv", 
+dataBreachesNB <- read_csv(file = "NaiveBayes.csv", 
                          col_types = "ciiffi",
                          col_names = TRUE)
 
 # Display the dataBreaches tibble on the console
-print(dataBreaches)
+print(dataBreachesNB)
 
 # Display the structure of dataBreaches tibble
-str(dataBreaches)
+str(dataBreachesNB)
 
 # Display the summary of dataBreaches tibble
-summary(dataBreaches)
+summary(dataBreachesNB)
 
 # Create the getmode function. Will use the DataSensitivty mode to replace 
 # na values in the DataSensitivity feature
@@ -606,36 +598,26 @@ getmode <- function(v) {
 }
 
 # use the getmode function on the DataSensitivity column
-v <- dataBreaches$DataSensitivity
+v <- dataBreachesNB$DataSensitivity
 
 # Calculate the mode using the user function.
 result <- getmode(v)
 print(result)
 
 #use the mutate function to replace the na values with the mode result of 2.
-dataBreaches <- dataBreaches %>% mutate(DataSensitivity = 
+dataBreachesNB <- dataBreachesNB %>% mutate(DataSensitivity = 
                                           ifelse(is.na(DataSensitivity), 
                                                  2, DataSensitivity))
 
 
 ##### add outliers here #####
 
-
-# normalize the RecordsLost feature by taking log10 of RecordsLost and putting 
-# into new column called LogRecordsLost 
-dataBreaches <- dataBreaches %>%
-  mutate(LogRecordsLost = log10(RecordsLost))
-
-# remove RecordsLost column from the tibble 
-dataBreaches <- dataBreaches %>%  
-  select(-RecordsLost)
-
 # create data frame using normalized tibble
-dataBreachesDataFrame <- data.frame(dataBreaches)
+dataBreachesDataFrameNB <- data.frame(dataBreachesNB)
 
 # discretize DataSensitivity into Type and store in a new data frame called 
 # dataBreachesDataFrame
-dataBreachesDataFrame <- dataBreachesDataFrame %>%
+dataBreachesDataFrameNB <- dataBreachesDataFrameNB %>%
   mutate(Type = case_when
          (DataSensitivity == 1 ~ "Email/Online Info", 
            DataSensitivity == 2 ~ "SSN/Personal Details", 
@@ -644,18 +626,14 @@ dataBreachesDataFrame <- dataBreachesDataFrame %>%
            TRUE ~ "Full Details"))
 
 # convert data frame back into tibble called dataBreaches with dummy variables
-dataBreaches <- as_tibble(dummy.data.frame(data = dataBreachesDataFrame,
+dataBreachesNB <- as_tibble(dummy.data.frame(data = dataBreachesDataFrameNB,
                                            names = "Type"))
 
-# remove DataSensitivity column from the tibble 
-dataBreaches <- dataBreaches %>%  
-  select(-DataSensitivity)
-
 # create data frame for second dummy code step
-dataBreachesDataFrame <- data.frame(dataBreaches)
+dataBreachesDataFrameNB <- data.frame(dataBreachesNB)
 
 # dummy code Method column for MaliciousActor 
-dataBreachesDataFrame <- dataBreachesDataFrame %>%
+dataBreachesDataFrameNB <- dataBreachesDataFrameNB %>%
   mutate(MaliciousActor = case_when
          (Method == "inside job" ~ 1,
            Method == "hacked" ~ 1,
@@ -663,44 +641,36 @@ dataBreachesDataFrame <- dataBreachesDataFrame %>%
            Method == "accidental leak" ~ 0,
            Method == "lost device" ~ 0))
 
-# remove Method column from the data frame
-dataBreachesDataFrame <- dataBreachesDataFrame %>%  
-  select(-Method,)
+# remove unnecessary columns from the data frame
+dataBreachesDataFrameNB <- dataBreachesDataFrameNB %>%
+  select(-Method, -Organization, -DataSensitivity)
 
 # convert data frame back into dataBreaches tibble
-dataBreaches <- as_tibble(dataBreachesDataFrame)
+dataBreachesNB <- as_tibble(dataBreachesDataFrameNB)
+
+#### end of preprocessing ----------------------------------------------
 
 #NAIVE BAYES
 
 #Look at current data set - first 6
-head(dataBreaches)
-
-#Change organization to a factor from a character
-dataBreachesNaiveBayes <- dataBreaches %>% 
-  mutate(Organization = as.factor(Organization))
-
-#Confirm Change
-head(dataBreachesNaiveBayes)
+head(dataBreachesNB)
 
 #Check summary for LogRecordsLost mean
-summary(dataBreachesNaiveBayes)
-
-#Replace LogRecordsLost Column with mean of 6.480
-
+summary(dataBreachesNB)
 
 #Split data into training and testing data sets - first set sed
 set.seed(1234)
 
 #Create a vector of 75% randomly sampled rows from the original data set
-sampleSet <- sample(nrow(dataBreachesNaiveBayes),
-                  round(nrow(dataBreachesNaiveBayes) * 0.75),
-                  replace = FALSE)
+sampleSet <- sample(nrow(dataBreachesNB),
+                    round(nrow(dataBreachesNB) * 0.75),
+                    replace = FALSE)
 
 #Put the records from the 75% sample into a training set
-dataBreachesNaiveBayesTraining <- dataBreachesNaiveBayes[sampleSet, ]
+dataBreachesNaiveBayesTraining <- dataBreachesNB[sampleSet, ]
 
 #Put the records from the other 25% of records into a testing set
-dataBreachesNaiveBayesTesting <- dataBreachesNaiveBayes[-sampleSet, ]
+dataBreachesNaiveBayesTesting <- dataBreachesNB[-sampleSet, ]
 
 # Train the naïve bayes model (variety is thing being predicted)
 dataBreachesNaiveBayesModel <- naiveBayes(formula = MaliciousActor ~ .,
@@ -737,6 +707,7 @@ predictiveAccuracy <- sum(diag(dataBreachesNaiveBayesConfusionMatrix)) /
 
 #Display predictive accuracy
 print(predictiveAccuracy)
+
 
 #END NAIVE BAYES------------------------------------------------------
 
