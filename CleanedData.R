@@ -9,11 +9,15 @@
 # For Y:
 # Additional description as required.
 
-# install.packages(tidyverse)
-# install.packages(dummies)
+# install.packages("tidyverse")
+# install.packages("dummies")
+# install.packages("smotefamily")
+# install.packages ("corrplot")
+# install.packages("oslrr")
+# install.packages("class")
 # install.packages("neuralnet")
-# install.packages(rpart)
-# install.packages(rpart.plot)
+# install.packages("rpart")
+# install.packages("rpart.plot")
 
 library(tidyverse)
 library(dummies)
