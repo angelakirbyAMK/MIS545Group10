@@ -265,10 +265,6 @@ dataBreachesDataFrameLR <- dataBreachesDataFrameLR %>%
   filter(!is.na(MaliciousActor)) %>%
   filter(!is.na(LogRecordsLost))
 
-# eliminate unneeded columns and create new dataframe
-dataBreachesDataFrameLR <- dataBreachesDataFrameLR %>%
-  select(-c(Sector))
-
 # create new tibble with cleaned dataframe
 dataBreachesLR <- as_tibble(dataBreachesDataFrameLR)
 
