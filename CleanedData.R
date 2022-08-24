@@ -191,8 +191,8 @@ ggplot(query1, aes(x = Year, y = n)) +
   ggtitle("Data Breaches from 2004 to 2021") +
   ylab("Number of Events") +
   theme_bw() +
-  theme(plot.title = element_text(hjust = 0.5))
-  
+  theme(plot.title = element_text(hjust = 0.5)) +
+  theme(text = element_text(size = 24))
 
 # Query 2 - On average, did non-malicious attacks result in more or less 
 # compromised records than malicious attacks?
@@ -217,7 +217,8 @@ dataBreachesQ3 <- dataBreaches %>%
 ggplot(dataBreachesQ3, aes(x = Sector, fill = factor(MaliciousActor))) +
   geom_bar(position = "dodge") +
   labs(title = "5 Sectors with the Most Data Breaches") +
-  theme(plot.title = element_text(hjust = 0.5))
+  theme(plot.title = element_text(hjust = 0.5)) +
+  theme(text = element_text(size = 24))
 
 # end of queries -------------------------------------------------------
 
