@@ -188,8 +188,11 @@ query1 <- dataBreaches %>%
 # create line graph graph of query 1
 ggplot(query1, aes(x = Year, y = n)) +
   geom_line(color = "red", size = 2) +
-  ylab("Count of Events") +
-  theme_bw()
+  ggtitle("Data Breaches from 2004 to 2021") +
+  ylab("Number of Events") +
+  theme_bw() +
+  theme(plot.title = element_text(hjust = 0.5))
+  
 
 # Query 2 - On average, did non-malicious attacks result in more or less 
 # compromised records than malicious attacks?
@@ -200,7 +203,21 @@ query2 <- dataBreaches %>%
             MedianRecordsLost = median(LogRecordsLost),
             AvgRecordsLost = mean(LogRecordsLost))
 
-# Query 3 - in progress
+# Query 3 - What 5 sectors had the highest amount of data breaches and what 
+# proportion of them were malicious vs. non-malicious?
+query3 <- dataBreaches %>%
+  count(Sector) %>%
+  top_n(5) %>%
+  arrange(desc(n))
+
+dataBreachesQ3 <- dataBreaches %>%
+  filter(Sector %in% c("web", "health", "government", "finance", "retail"))
+
+# create bar plot
+ggplot(dataBreachesQ3, aes(x = Sector, fill = factor(MaliciousActor))) +
+  geom_bar(position = "dodge") +
+  labs(title = "5 Sectors with the Most Data Breaches") +
+  theme(plot.title = element_text(hjust = 0.5))
 
 # end of queries -------------------------------------------------------
 
