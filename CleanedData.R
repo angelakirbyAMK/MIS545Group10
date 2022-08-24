@@ -106,6 +106,34 @@ dataBreachesDataFrame <- dataBreachesDataFrame %>%
 dataBreaches <- as_tibble(dummy.data.frame(data = dataBreachesDataFrame,
                                             names = "Type"))
 
+#### Create Multicollinearity Pre-Processing Tibble ---------------------
+
+dataBreachesMulticollinearity <- as_tibble(dataBreachesDataFrame)
+
+dataBreachesDataFrameMulticollinearity <-
+  data.frame(dataBreachesMulticollinearity)
+
+# dummy code Method column for MaliciousActor 
+dataBreachesDataFrameMulticollinearity <-
+  dataBreachesDataFrameMulticollinearity %>%
+  mutate(MaliciousActor = case_when
+         (Method == "inside job" ~ 1,
+           Method == "hacked" ~ 1,
+           Method == "poor security" ~ 1,
+           Method == "accidental leak" ~ 0,
+           Method == "lost device" ~ 0))
+
+# remove unnecessary columns from the data frame
+dataBreachesDataFrameMulticollinearity <-
+  dataBreachesDataFrameMulticollinearity %>%
+  select(-Method, -Organization, -DataSensitivity)
+
+# convert data frame back into dataBreaches tibble
+dataBreachesMulticollinearity <-
+  as_tibble(dataBreachesDataFrameMulticollinearity)
+
+#### End of Multicollinearity Pre-Processing
+
 # create data frame for second dummy code step
 dataBreachesDataFrame <- data.frame(dataBreaches)
 
@@ -129,6 +157,24 @@ dataBreaches <- as_tibble(dataBreachesDataFrame)
 summary(dataBreaches)
 
 #### end of preprocessing ----------------------------------------------
+
+#### Test for Multicollinearity ---------------------------------------
+
+# Check for Multicollinearity
+dataBreachesLinearModel <- lm(data = dataBreachesMulticollinearity,
+                        formula = MaliciousActor ~ LogRecordsLost + Sector + 
+                          Year + Type)
+
+# Display linear model
+print(dataBreachesLinearModel)
+
+# Show summary of linear model
+summary(dataBreachesLinearModel)
+
+# Test for Multicollinearity
+ols_vif_tol(dataBreachesLinearModel)
+
+#### End of Multicollinearity code -----------------------------------
 
 #### three interesting queries -----------------------------------------
 
