@@ -463,9 +463,6 @@ dataBreachesKNNDataFrame <- dataBreachesDataFrame %>%
 # Use dummy function on sector
 dataBreachesKNN <- as_tibble(dummy.data.frame(data = dataBreachesKNNDataFrame,
                                               names = "Sector"))
-# Remove empty sector column
-dataBreachesKNN <- dataBreachesKNN %>%
-  select(-Sector)
 
 # Set seed
 set.seed(5654)
@@ -491,12 +488,12 @@ dataBreachesKNNTesting <- dataBreachesKNN[-sampleSetKNN, ]
 dataBreachesKNNTestingLabels <- dataBreachesKNNLabels[-sampleSetKNN, ]
 
 # Create k-Nearest Neighbor Model 
-# Updated k value to 3 based on most accurate value in for loop
+# Updated k value to 7 based on most accurate value in for loop
 kNearestMaliciousActorPrediction <-
   knn(train = dataBreachesKNNTraining,
       test = dataBreachesKNNTesting,
       cl = dataBreachesKNNTrainingLabels$MaliciousActor,
-      k = 3)
+      k = 7)
 
 # Display results of K Nearest Neighbor Model
 print(kNearestMaliciousActorPrediction)
