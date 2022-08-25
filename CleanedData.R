@@ -85,9 +85,10 @@ outlierMin <- quantile(dataBreaches$LogRecordsLost, .25) -
 outlierMax <- quantile(dataBreaches$LogRecordsLost, .75) +
   (IQR(dataBreaches$LogRecordsLost) * 1.5)
 
-# Remove outliers from the dataset (include only non-outliers)
-dataBreaches <- dataBreaches %>%
-  filter(LogRecordsLost >= outlierMin & LogRecordsLost <= outlierMax)
+# Keep outliers in the dataset, but add them to their own tibble called
+# dataBreachesOutliers
+dataBreachesOutliers <- dataBreaches %>%
+  filter(LogRecordsLost < outlierMin | LogRecordsLost > outlierMax)
 
 # create data frame using normalized tibble
 dataBreachesDataFrame <- data.frame(dataBreaches)
@@ -222,7 +223,24 @@ ggplot(dataBreachesQ3, aes(x = Sector, fill = factor(MaliciousActor))) +
 
 # end of queries -------------------------------------------------------
 
-#### Logistic Regression Start of Code (Jordan) ------------------------
+#Histogram for main data set........(Note - only 3 of 4 independent variable 
+# show (Sector is not numeric)) ----------------------------------------
+
+displayAllHistograms <- function(tibbleDataset) {
+  tibbleDataset %>%
+    keep(is.numeric) %>%
+    gather() %>%
+    ggplot() + geom_histogram(mapping = aes(x=value,fill=key),
+                              color = "black") +
+    facet_wrap(~ key, scales = "free") +
+    theme_minimal()
+}
+
+displayAllHistograms(dataBreaches)
+
+#END Histogram for data set--------------------------------------------------
+
+#### Logistic Regression Start of Code (Jordan) -----------------------------
 
 # use dummy function for sector columns
 dataBreachesLR <- as_tibble(dummy.data.frame(data = dataBreachesDataFrame,
@@ -561,9 +579,7 @@ print(dataBreachesKNNKValueMatrix)
 
 #  End of k-Nearest Neighbor Code (Jordan) -------------------------
 
-
-
-# begin neural network code - Angela ---------------------
+# begin neural network code (Angela) -------------------------------
 
 # Display the dataBreaches summary
 summary(dataBreaches)
@@ -659,7 +675,8 @@ library(class)
 library(e1071)
 
 # remember to set to your own working directory before running
-setwd("~/NaiveBayes")
+# setwd("~/NaiveBayes")
+setwd("/Users/Straight_As/Documents/UA/MIS/Summer2022/MIS545/GroupProject")
 
 # create tibble from csv file (without taking the log of RecordsLost)
 dataBreachesNB <- read_csv(file = "NaiveBayes.csv", 
@@ -693,9 +710,6 @@ print(result)
 dataBreachesNB <- dataBreachesNB %>% mutate(DataSensitivity = 
                                           ifelse(is.na(DataSensitivity), 
                                                  2, DataSensitivity))
-
-
-##### add outliers here #####
 
 # create data frame using normalized tibble
 dataBreachesDataFrameNB <- data.frame(dataBreachesNB)
@@ -795,19 +809,3 @@ print(predictiveAccuracy)
 
 
 #END NAIVE BAYES------------------------------------------------------
-
-#Histogram for main data set........(Note - only 3 of 4 independent variable show (Sector is not numeric)) ----------------------------------
-
-displayAllHistograms <- function(tibbleDataset) {
-  tibbleDataset %>%
-    keep(is.numeric) %>%
-    gather() %>%
-    ggplot() + geom_histogram(mapping = aes(x=value,fill=key),
-                              color = "black") +
-    facet_wrap(~ key, scales = "free") +
-    theme_minimal()
-}
-
-displayAllHistograms(dataBreaches)
-
-#END Histogram for data set-----------------------------------------------------------
