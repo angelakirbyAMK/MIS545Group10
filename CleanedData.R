@@ -18,6 +18,7 @@
 # install.packages("neuralnet")
 # install.packages("rpart")
 # install.packages("rpart.plot")
+# install.packages("e1071")
 
 library(tidyverse)
 library(dummies)
@@ -28,8 +29,9 @@ library(class)
 library(neuralnet)
 library(rpart)
 library(rpart.plot)
+library(e1071)
 
-# remember to set to your own working directory before running
+# set working directory
 setwd("/Users/Straight_As/Documents/UA/MIS/Summer2022/MIS545/GroupProject")
 
 # create tibble from csv file
@@ -663,19 +665,7 @@ print(predictiveAccuracyNN)
 
 #NAIVE BAYES -------------------------------------------
 
-# install.packages(tidyverse)
-# install.packages(dummies)
-# install.packages("e1071")
-
-library(tidyverse)
-library(dummies)
-library(corrplot)
-library(olsrr)
-library(class)
-library(e1071)
-
-# remember to set to your own working directory before running
-# setwd("~/NaiveBayes")
+# set working directory
 setwd("/Users/Straight_As/Documents/UA/MIS/Summer2022/MIS545/GroupProject")
 
 # create tibble from csv file (without taking the log of RecordsLost)
